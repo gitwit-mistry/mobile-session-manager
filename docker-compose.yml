@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  emulator-manager:
+    build: .
+    container_name: mobile-agent-manager
+    privileged: true  # Required for KVM/emulator
+    ports:
+      - "8000:8000"
+      - "5554-5584:5554-5584"  # Emulator ports
+    volumes:
+      - ./snapshots:/app/snapshots
+      - avd-data:/root/.android/avd
+    environment:
+      - ANDROID_SDK_ROOT=/opt/android-sdk
+      - ANDROID_AVD_HOME=/root/.android/avd
+    devices:
+      - /dev/kvm  # For hardware acceleration (Linux only)
+    restart: unless-stopped
+
+volumes:
+  avd-data:
